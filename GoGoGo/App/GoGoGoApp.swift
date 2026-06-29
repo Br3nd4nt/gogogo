@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct GoGoGoApp: App {
+    init() {
+        _ = DittoNetworking.shared
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
