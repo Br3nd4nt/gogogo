@@ -6,30 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		065F2DC72FF2E45800AB643A /* DittoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 065F2DC62FF2E45800AB643A /* DittoSwift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		065F2DB52FF0726E00AB643A /* GoGoGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoGoGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		065F2DC82FF2E50000AB643A /* Exceptions for "GoGoGo" folder in "GoGoGo" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 065F2DB42FF0726E00AB643A /* GoGoGo */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		065F2DB72FF0726E00AB643A /* GoGoGo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				065F2DC82FF2E50000AB643A /* Exceptions for "GoGoGo" folder in "GoGoGo" target */,
-			);
 			path = GoGoGo;
 			sourceTree = "<group>";
 		};
@@ -40,7 +23,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				065F2DC72FF2E45800AB643A /* DittoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,7 +52,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 065F2DC02FF0727000AB643A /* Build configuration list for PBXNativeTarget "GoGoGo" */;
 			buildPhases = (
-				065F2DC92FF2E60000AB643A /* Generate Env.swift */,
 				065F2DB12FF0726E00AB643A /* Sources */,
 				065F2DB22FF0726E00AB643A /* Frameworks */,
 				065F2DB32FF0726E00AB643A /* Resources */,
@@ -84,7 +65,6 @@
 			);
 			name = GoGoGo;
 			packageProductDependencies = (
-				065F2DC62FF2E45800AB643A /* DittoSwift */,
 			);
 			productName = GoGoGo;
 			productReference = 065F2DB52FF0726E00AB643A /* GoGoGo.app */;
@@ -114,9 +94,6 @@
 			);
 			mainGroup = 065F2DAC2FF0726E00AB643A;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				065F2DC52FF2E45800AB643A /* XCRemoteSwiftPackageReference "dittoswiftpackage" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 065F2DB62FF0726E00AB643A /* Products */;
 			projectDirPath = "";
@@ -136,30 +113,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		065F2DC92FF2E60000AB643A /* Generate Env.swift */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/scripts/buildEnv.sh",
-				"$(SRCROOT)/.env",
-			);
-			name = "Generate Env.swift";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/GoGoGo/Env.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/scripts/buildEnv.sh\" \"${SRCROOT}/.env\" \"${SRCROOT}/${PROJECT}\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		065F2DB12FF0726E00AB643A /* Sources */ = {
@@ -303,10 +256,6 @@
 				DEVELOPMENT_TEAM = LP6FF36MS7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GoGoGo/Info.plist;
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth to connect and sync with nearby devices";
-				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth to connect and sync with nearby devices";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Uses WiFi to connect and sync with nearby devices";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -339,10 +288,6 @@
 				DEVELOPMENT_TEAM = LP6FF36MS7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GoGoGo/Info.plist;
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth to connect and sync with nearby devices";
-				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth to connect and sync with nearby devices";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Uses WiFi to connect and sync with nearby devices";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -387,25 +332,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		065F2DC52FF2E45800AB643A /* XCRemoteSwiftPackageReference "dittoswiftpackage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getditto/dittoswiftpackage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		065F2DC62FF2E45800AB643A /* DittoSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 065F2DC52FF2E45800AB643A /* XCRemoteSwiftPackageReference "dittoswiftpackage" */;
-			productName = DittoSwift;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 065F2DAD2FF0726E00AB643A /* Project object */;
 }
