@@ -11,7 +11,11 @@ import SwiftUI
 struct GoGoGoApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HStack {
+                GameViewControllerRepresentable()
+//                GameViewControllerRepresentable()
+            }
+//            .background(Color.pink)
         }
     }
 }

@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		06A46CF83000D0DC00DC5442 /* InMemoryLogging in Frameworks */ = {isa = PBXBuildFile; productRef = 06A46CF73000D0DC00DC5442 /* InMemoryLogging */; };
+		06A46CFA3000D0DC00DC5442 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 06A46CF93000D0DC00DC5442 /* Logging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		065F2DB52FF0726E00AB643A /* GoGoGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoGoGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06A46CFA3000D0DC00DC5442 /* Logging in Frameworks */,
+				06A46CF83000D0DC00DC5442 /* InMemoryLogging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = GoGoGo;
 			packageProductDependencies = (
+				06A46CF73000D0DC00DC5442 /* InMemoryLogging */,
+				06A46CF93000D0DC00DC5442 /* Logging */,
 			);
 			productName = GoGoGo;
 			productReference = 065F2DB52FF0726E00AB643A /* GoGoGo.app */;
@@ -94,6 +103,9 @@
 			);
 			mainGroup = 065F2DAC2FF0726E00AB643A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 065F2DB62FF0726E00AB643A /* Products */;
 			projectDirPath = "";
@@ -261,6 +273,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -293,6 +306,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,6 +346,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		06A46CF73000D0DC00DC5442 /* InMemoryLogging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = InMemoryLogging;
+		};
+		06A46CF93000D0DC00DC5442 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 065F2DAD2FF0726E00AB643A /* Project object */;
 }
