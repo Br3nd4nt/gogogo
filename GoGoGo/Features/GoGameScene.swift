@@ -4,49 +4,51 @@
 //
 //  Created by br3nd4nt on 10.07.2026.
 //
+
 import SpriteKit
 import GameplayKit
+import Puppy
+import SwiftUI
 
 class GoGameScene: SKScene {
+    private let logger: Puppy = Dependencies.shared.logger
     private var game: GoGame = GoGame()
     private var boardNode: SKNode = SKNode()
+    private var stoneNodes: [Position: SKShapeNode] = [:]
     
-    private let boardSize: Int = 9
-    private var cellSize: CGFloat = 10
-    private let stoneRadius: CGFloat = 18
-    private let boardPadding: CGFloat = 10
-    
+    // Arrays to track board elements
     private var verticalLines: [SKShapeNode] = []
     private var horizontalLines: [SKShapeNode] = []
     private var starPoints: [SKShapeNode] = []
+    
+    private let boardSize: Int = 9
+    private var cellSize: CGFloat = 10
+    private var stoneRadius: CGFloat = 25
+    private let boardPadding: CGFloat = 10
+    private let deadZone: CGFloat = 0.3
+    
     private var elementsCreated = false
+    
+    private var boardSide = CGFloat.zero
+    private var startX = CGFloat.zero
+    private var startY = CGFloat.zero
     
     // MARK: - Initialization
     override init(size: CGSize) {
         super.init(size: size)
         game = GoGame(size: boardSize)
+        setupScene()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         game = GoGame(size: boardSize)
+        setupScene()
     }
     
-    // MARK: - Scene Lifecycle
-    override func sceneDidLoad() {
-        super.sceneDidLoad()
-        setupBoardIfNeeded()
-    }
-    
-    override func didMove(to view: SKView) {
-        super.didMove(to: view)
-        setupBoardIfNeeded()
-    }
-    
-    private func setupBoardIfNeeded() {
-        guard !elementsCreated else { return }
+    private func setupScene() {
+        self.backgroundColor = .clear
         
-        // Add board node if not already added
         if boardNode.parent == nil {
             addChild(boardNode)
         }
@@ -55,12 +57,35 @@ class GoGameScene: SKScene {
         layoutBoard()
     }
     
-    // MARK: - Create Board Elements (called once)
+    // MARK: - Scene Lifecycle
+    override func sceneDidLoad() {
+        super.sceneDidLoad()
+        if !elementsCreated {
+            createBoardElements()
+            layoutBoard()
+        }
+    }
+    
+    override func didMove(to view: SKView) {
+        super.didMove(to: view)
+        if !elementsCreated {
+            createBoardElements()
+            layoutBoard()
+        }
+    }
+    
+    // MARK: - Create Board Elements
     private func createBoardElements() {
         guard !elementsCreated else { return }
         elementsCreated = true
         
-        // vertical lines
+        // Clear any existing children
+        boardNode.removeAllChildren()
+        verticalLines.removeAll()
+        horizontalLines.removeAll()
+        starPoints.removeAll()
+        
+        // Create vertical lines
         for _ in 0..<boardSize {
             let vLine = SKShapeNode()
             vLine.strokeColor = .black
@@ -69,7 +94,7 @@ class GoGameScene: SKScene {
             verticalLines.append(vLine)
         }
         
-        // horizontal lines
+        // Create horizontal lines
         for _ in 0..<boardSize {
             let hLine = SKShapeNode()
             hLine.strokeColor = .black
@@ -93,7 +118,8 @@ class GoGameScene: SKScene {
         super.didChangeSize(oldSize)
         
         if !elementsCreated {
-            setupBoardIfNeeded()
+            createBoardElements()
+            layoutBoard()
         } else {
             layoutBoard()
         }
@@ -105,15 +131,17 @@ class GoGameScene: SKScene {
         
         let minDimension = min(size.width, size.height)
         let availableSize = minDimension - boardPadding * 2
-        cellSize = max(availableSize / CGFloat(boardSize), 10)
+        cellSize = max(availableSize / CGFloat(boardSize - 1), 10)
+        stoneRadius = cellSize / 2.5
         
         repositionBoard()
+        repositionStones()
     }
     
     private func repositionBoard() {
-        let boardSide = CGFloat(boardSize - 1) * cellSize
-        let startX = (size.width - boardSide) / 2
-        let startY = (size.height - boardSide) / 2
+        boardSide = CGFloat(boardSize - 1) * cellSize
+        startX = (size.width - boardSide) / 2
+        startY = (size.height - boardSide) / 2
         
         // Reposition vertical lines
         for i in 0..<boardSize {
@@ -143,5 +171,103 @@ class GoGameScene: SKScene {
             let y = startY + CGFloat(position.1) * cellSize
             starPoints[index].position = CGPoint(x: x, y: y)
         }
+    }
+    
+    // MARK: - Stone Management
+    
+    private func drawStone(_ stone: Stone, at position: Position) {
+        removeStone(at: position)
+        let color: UIColor = stone == .black ? .black : .white
+        let stoneNode = SKShapeNode(circleOfRadius: stoneRadius)
+        stoneNode.fillColor = color
+        stoneNode.strokeColor = color == .black ? .gray : .lightGray
+        stoneNode.lineWidth = 0.5
+        
+        stoneNode.position = positionToPoint(position)
+        boardNode.addChild(stoneNode)
+        stoneNodes[position] = stoneNode
+        logger.debug("Placed \(stone == .black ? "black" : "white") stone at (\(position.row), \(position.col))")
+    }
+    
+    private func removeStone(at position: Position) {
+        if let existingStone = stoneNodes[position] {
+            existingStone.removeFromParent()
+            stoneNodes.removeValue(forKey: position)
+        }
+    }
+    
+    private func removeAllStones() {
+        for (_, stoneNode) in stoneNodes {
+            stoneNode.removeFromParent()
+        }
+        stoneNodes.removeAll()
+    }
+    
+    private func repositionStones() {
+        let newRadius = stoneRadius
+        let newPath = CGPath(ellipseIn: CGRect(
+            x: -newRadius,
+            y: -newRadius,
+            width: newRadius * 2,
+            height: newRadius * 2
+        ), transform: nil)
+        
+        for (pos, node) in stoneNodes {
+            // Update position
+            node.position = positionToPoint(pos)
+            // Update radius
+            node.path = newPath
+        }
+    }
+    
+    // MARK: - Touch Handling
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        guard let position = pointToPosition(touch.location(in: self)) else { return }
+        if game.placeStone(at: position) {
+            let placedStone = game.currentPlayer.opposite
+            drawStone(placedStone, at: position)
+        }
+    }
+    
+    private func pointToPosition(_ point: CGPoint) -> Position? {
+        let normalizedX = point.x - startX
+        let normalizedY = point.y - startY
+        
+        // Check if within board bounds
+        let boardWidth = CGFloat(boardSize - 1) * cellSize
+        let boardHeight = CGFloat(boardSize - 1) * cellSize
+        
+        guard normalizedX >= -cellSize/2 && normalizedX <= boardWidth + cellSize/2,
+              normalizedY >= -cellSize/2 && normalizedY <= boardHeight + cellSize/2 else {
+            return nil
+        }
+        
+        let col = Int(round(normalizedX / cellSize))
+        let row = Int(round(normalizedY / cellSize))
+        
+        guard row >= 0 && row < boardSize && col >= 0 && col < boardSize else {
+            return nil
+        }
+        
+        // Check dead zone
+        let nearestX = CGFloat(col) * cellSize
+        let nearestY = CGFloat(row) * cellSize
+        let distanceX = abs(normalizedX - nearestX)
+        let distanceY = abs(normalizedY - nearestY)
+        let deadZonePixels = cellSize * deadZone
+        
+        if distanceX > deadZonePixels || distanceY > deadZonePixels {
+            return nil
+        }
+        
+        logger.debug("pressed at point \(row) \(col)")
+        return Position(row: row, col: col)
+    }
+    
+    private func positionToPoint(_ position: Position) -> CGPoint {
+        CGPoint(x: CGFloat(position.col) * cellSize + startX,
+                y: CGFloat(position.row) * cellSize + startY)
     }
 }

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06A46CF83000D0DC00DC5442 /* InMemoryLogging in Frameworks */ = {isa = PBXBuildFile; productRef = 06A46CF73000D0DC00DC5442 /* InMemoryLogging */; };
-		06A46CFA3000D0DC00DC5442 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 06A46CF93000D0DC00DC5442 /* Logging */; };
+		06A46DBD30016F4000DC5442 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 06A46DBC30016F4000DC5442 /* Swinject */; };
+		06A46DC4300170A100DC5442 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 06A46DC3300170A100DC5442 /* Puppy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06A46CFA3000D0DC00DC5442 /* Logging in Frameworks */,
-				06A46CF83000D0DC00DC5442 /* InMemoryLogging in Frameworks */,
+				06A46DBD30016F4000DC5442 /* Swinject in Frameworks */,
+				06A46DC4300170A100DC5442 /* Puppy in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,8 +72,8 @@
 			);
 			name = GoGoGo;
 			packageProductDependencies = (
-				06A46CF73000D0DC00DC5442 /* InMemoryLogging */,
-				06A46CF93000D0DC00DC5442 /* Logging */,
+				06A46DBC30016F4000DC5442 /* Swinject */,
+				06A46DC3300170A100DC5442 /* Puppy */,
 			);
 			productName = GoGoGo;
 			productReference = 065F2DB52FF0726E00AB643A /* GoGoGo.app */;
@@ -104,7 +104,8 @@
 			mainGroup = 065F2DAC2FF0726E00AB643A;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */,
+				06A46DBB30016F4000DC5442 /* XCRemoteSwiftPackageReference "swinject" */,
+				06A46DC2300170A100DC5442 /* XCRemoteSwiftPackageReference "Puppy" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 065F2DB62FF0726E00AB643A /* Products */;
@@ -348,26 +349,34 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */ = {
+		06A46DBB30016F4000DC5442 /* XCRemoteSwiftPackageReference "swinject" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-log";
+			repositoryURL = "https://github.com/swinject/swinject";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.14.0;
+				minimumVersion = 2.10.0;
+			};
+		};
+		06A46DC2300170A100DC5442 /* XCRemoteSwiftPackageReference "Puppy" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sushichop/Puppy";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		06A46CF73000D0DC00DC5442 /* InMemoryLogging */ = {
+		06A46DBC30016F4000DC5442 /* Swinject */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */;
-			productName = InMemoryLogging;
+			package = 06A46DBB30016F4000DC5442 /* XCRemoteSwiftPackageReference "swinject" */;
+			productName = Swinject;
 		};
-		06A46CF93000D0DC00DC5442 /* Logging */ = {
+		06A46DC3300170A100DC5442 /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 06A46CF63000D0DC00DC5442 /* XCRemoteSwiftPackageReference "swift-log" */;
-			productName = Logging;
+			package = 06A46DC2300170A100DC5442 /* XCRemoteSwiftPackageReference "Puppy" */;
+			productName = Puppy;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

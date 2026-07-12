@@ -28,4 +28,22 @@ class GoGame {
         self.board = []
         self.isGameOver = true
     }
+    
+    func placeStone(at position: Position) -> Bool {
+        guard !isGameOver else { return false }
+        guard board[position.row][position.col] == .empty else { return false }
+        
+        board[position.row][position.col] = currentPlayer
+        moveHistory.append(position)
+        currentPlayer = currentPlayer.opposite
+        return true
+    }
+    
+    func getStone(at position: Position) -> Stone {
+        guard position.row >= 0 && position.row < boardSize,
+              position.col >= 0 && position.col < boardSize else {
+            return .empty
+        }
+        return board[position.row][position.col]
+    }
 }
