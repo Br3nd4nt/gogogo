@@ -12,7 +12,7 @@ import SwiftUI
 
 class GoGameScene: SKScene {
     private let logger: Puppy = Dependencies.shared.logger
-    private var game: GoGame = GoGame()
+    private var game: GoGame
     private var boardNode: SKNode = SKNode()
     private var stoneNodes: [Position: SKShapeNode] = [:]
     
@@ -35,15 +35,13 @@ class GoGameScene: SKScene {
     
     // MARK: - Initialization
     override init(size: CGSize) {
-        super.init(size: size)
         game = GoGame(size: boardSize)
+        super.init(size: size)
         setupScene()
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        game = GoGame(size: boardSize)
-        setupScene()
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupScene() {
@@ -55,6 +53,8 @@ class GoGameScene: SKScene {
         
         createBoardElements()
         layoutBoard()
+        
+        updateAllStones()
     }
     
     // MARK: - Scene Lifecycle
@@ -119,10 +119,9 @@ class GoGameScene: SKScene {
         
         if !elementsCreated {
             createBoardElements()
-            layoutBoard()
-        } else {
-            layoutBoard()
         }
+        layoutBoard()
+        
     }
     
     // MARK: - Layout
@@ -131,7 +130,7 @@ class GoGameScene: SKScene {
         
         let minDimension = min(size.width, size.height)
         let availableSize = minDimension - boardPadding * 2
-        cellSize = max(availableSize / CGFloat(boardSize - 1), 10)
+        cellSize = max(availableSize / CGFloat(boardSize), 10)
         stoneRadius = cellSize / 2.5
         
         repositionBoard()
@@ -175,18 +174,30 @@ class GoGameScene: SKScene {
     
     // MARK: - Stone Management
     
+    private func updateAllStones() {
+        removeAllStones()
+        for row in 0..<boardSize {
+            for col in 0..<boardSize {
+                let position = Position(row: row, col: col)
+                let stone = game.getStone(at: position)
+                if stone != .empty {
+                    drawStone(stone, at: position)
+                }
+            }
+        }
+        logger.debug("Updated all stones - \(stoneNodes.count) stones on board")
+    }
+    
     private func drawStone(_ stone: Stone, at position: Position) {
         removeStone(at: position)
-        let color: UIColor = stone == .black ? .black : .white
         let stoneNode = SKShapeNode(circleOfRadius: stoneRadius)
-        stoneNode.fillColor = color
-        stoneNode.strokeColor = color == .black ? .gray : .lightGray
+        stoneNode.fillColor = stone.fillColor
+        stoneNode.strokeColor = stone.strokeColor
         stoneNode.lineWidth = 0.5
         
         stoneNode.position = positionToPoint(position)
         boardNode.addChild(stoneNode)
         stoneNodes[position] = stoneNode
-        logger.debug("Placed \(stone == .black ? "black" : "white") stone at (\(position.row), \(position.col))")
     }
     
     private func removeStone(at position: Position) {
@@ -226,8 +237,7 @@ class GoGameScene: SKScene {
         guard let touch = touches.first else { return }
         guard let position = pointToPosition(touch.location(in: self)) else { return }
         if game.placeStone(at: position) {
-            let placedStone = game.currentPlayer.opposite
-            drawStone(placedStone, at: position)
+            updateAllStones()
         }
     }
     

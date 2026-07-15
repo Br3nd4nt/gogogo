@@ -26,7 +26,8 @@ final class GameViewController: UIViewController {
         skView.isOpaque = false
         
         // Create and present scene
-        gameScene = GoGameScene(size: view.bounds.size)
+//        gameScene = GoGameScene(size: view.bounds.size)
+        gameScene.size = view.bounds.size
         gameScene.scaleMode = .resizeFill
         gameScene.backgroundColor = .clear
         
