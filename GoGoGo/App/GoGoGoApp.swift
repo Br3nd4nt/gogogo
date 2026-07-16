@@ -12,7 +12,7 @@ struct GoGoGoApp: App {
     var body: some Scene {
         WindowGroup {
             HStack {
-                GameViewControllerRepresentable()
+                ContentView()
             }
 //            .background(Color.pink)
         }

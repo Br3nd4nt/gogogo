@@ -174,7 +174,7 @@ class GoGameScene: SKScene {
     
     // MARK: - Stone Management
     
-    private func updateAllStones() {
+    func updateAllStones() {
         removeAllStones()
         for row in 0..<boardSize {
             for col in 0..<boardSize {
@@ -279,5 +279,11 @@ class GoGameScene: SKScene {
     private func positionToPoint(_ position: Position) -> CGPoint {
         CGPoint(x: CGFloat(position.col) * cellSize + startX,
                 y: CGFloat(position.row) * cellSize + startY)
+    }
+    
+    // MARK: - helpers
+    
+    func setGame(_ game: GoGame) {
+        self.game = game
     }
 }

@@ -5,19 +5,21 @@
 //  Created by br3nd4nt on 10.07.2026.
 //
 
+import Combine
 import Puppy
 import Foundation
 
-class GoGame {
+class GoGame: ObservableObject {
     private let logger: Puppy = Dependencies.shared.logger
     
-    let boardSize: Int
-    var board: [[Stone]]
-    var currentPlayer: Stone = .black
-    var capturedStones: [Stone: Int] = [.black: 0, .white: 0]
-    var moveHistory: [Position] = []
-    var lastMove: Position?
-    var isGameOver: Bool = false
+    @Published var boardSize: Int
+    @Published var board: [[Stone]]
+    @Published var currentPlayer: Stone = .black
+    @Published var capturedStones: [Stone: Int] = [.black: 0, .white: 0]
+    @Published var moveHistory: [Position] = []
+    @Published var lastMove: Position?
+    @Published var isGameOver: Bool = false
+    @Published var previousTurnPass: Bool = false
     
     // State hashing for Ko detection
     private var hasher: ZobristHashing
@@ -80,6 +82,7 @@ class GoGame {
         moveHistory.append(position)
         changePlayer()
         updateStateHistory()
+        previousTurnPass = false
         return true
     }
     
@@ -139,6 +142,39 @@ class GoGame {
         currentPlayer = currentPlayer.opposite
     }
     
+    func pass() -> Bool {
+        if !previousTurnPass {
+            previousTurnPass = true
+            changePlayer()
+        } else {
+            endGame()
+        }
+        
+        return true
+    }
+    
+    private func endGame() {
+        isGameOver = true
+    }
+    
+    func reset() {
+        board = Array(repeating: Array(repeating: .empty, count: boardSize), count: boardSize)
+        currentPlayer = .black
+        capturedStones = [.black: 0, .white: 0]
+        moveHistory = []
+        lastMove = nil
+        isGameOver = false
+        previousTurnPass = false
+        
+        hasher = ZobristHashing(size: boardSize)
+        stateHistory = []
+        updateStateHistory()
+        
+        objectWillChange.send()
+        
+        logger.info("Game reset")
+    }
+    
     // MARK: - Group detection
     
     private func getGroup(at position: Position) -> [Position] {
@@ -189,6 +225,94 @@ class GoGame {
     private func hasLiberties(at position: Position) -> Bool {
         let group = getGroup(at: position)
         return hasLiberties(for: group)
+    }
+    
+    // MARK: - Scoring
+    
+    func calculateScore() -> [Stone: Int] {
+        var result: [Stone: Int] = [
+            .black: capturedStones[.white] ?? 0,
+            .white: capturedStones[.black] ?? 0,
+        ]
+        var visited: Set<Position> = []
+        
+        for row in 0..<boardSize {
+            for col in 0..<boardSize {
+                let pos = Position(row: row, col: col)
+                if visited.contains(pos) { continue }
+                let stone = getStone(at: pos)
+                if stone == .empty {
+                    let territory = getTerritory(at: pos)
+                    visited.formUnion(territory)
+                    
+                    let owner = getTerritoryOwner(territory)
+                    if owner == .black {
+                        result[.black]? += territory.count
+                    } else if owner == .white {
+                        result[.white]? += territory.count
+                    }
+                } else {
+                    visited.insert(pos)
+                    if stone == .black {
+                        result[.black]? += 1
+                    } else if stone == .white {
+                        result[.white]? += 1
+                    }
+                }
+            }
+        }
+        
+        return result
+    }
+    
+    func getTerritory(at position: Position) -> [Position] {
+        guard getStone(at: position) == .empty else { return [] }
+        
+        var territory: [Position] = []
+        var visited: Set<Position> = []
+        var queue = [position]
+        while !queue.isEmpty {
+            let pos = queue.removeFirst()
+            if visited.contains(pos) { continue }
+            visited.insert(pos)
+            territory.append(pos)
+            
+            for neighbor in pos.neighbors(boardSize: boardSize) {
+                if !visited.contains(neighbor) && getStone(at: neighbor) == .empty {
+                    queue.append(neighbor)
+                }
+            }
+        }
+        
+        return territory
+        
+    }
+    
+    func getTerritoryOwner(_ territory: [Position]) -> Stone {
+        var blackOwning = false
+        var whiteOwning = false
+        
+        for pos in territory {
+            for neighbor in pos.neighbors(boardSize: boardSize) {
+                let stone = getStone(at: neighbor)
+                if stone == .black {
+                    blackOwning = true
+                } else if stone == .white {
+                    whiteOwning = true
+                }
+                
+                if whiteOwning && blackOwning {
+                    return .empty
+                }
+            }
+        }
+        if blackOwning {
+            return .black
+        }
+        if whiteOwning {
+            return .white
+        }
+        return .empty
     }
     
     // MARK: - Hashing
